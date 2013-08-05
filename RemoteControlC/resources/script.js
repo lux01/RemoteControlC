@@ -51,13 +51,13 @@ function _handleTouchMove(event) {
 }
 
 function _handleTouchEnd(event) {
-	if(event.targetTouches.length > 0) return;
+	if(event.targetTouches.length > 1) return;
 	if(touchMax == 2) leftClick(); 
 	if(touchMax == 3) rightClick(); 
     if(touchMax >= 4) changeSensitivity(); 
     prevPos = null;
     latestPos = null;
-	touchMax = 0;
+	touchMax = event.targetTouches.length;
 }
 
 function sendMousePosition() {
@@ -68,7 +68,7 @@ function sendMousePosition() {
         var y = sensitivity*(latestPos.y - prevPos.y);
         
         var xhReq = new XMLHttpRequest();
-        xhReq.open("GET", server + "move?x="+ x + "&y=" + y, true);
+        xhReq.open("POST", server + "move?x="+ x + "&y=" + y, true);
         xhReq.send(null);
         prevPos = latestPos;
     }
@@ -76,13 +76,13 @@ function sendMousePosition() {
 
 function leftClick() {
     var xhReq = new XMLHttpRequest();
-    xhReq.open("GET", server + "left_click", true);
+    xhReq.open("POST", server + "left_click", true);
     xhReq.send(null);
 }
 
 function rightClick() {
     var xhReq = new XMLHttpRequest();
-    xhReq.open("GET", server + "right_click", true);
+    xhReq.open("POST", server + "right_click", true);
     xhReq.send(null);
 }
 
