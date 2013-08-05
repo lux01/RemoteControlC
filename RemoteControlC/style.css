@@ -1,0 +1,32 @@
+body {
+    overflow: hidden;
+    text-align: center;
+}
+
+button {
+    z-index: 999;
+}
+
+canvas {
+    z-index: 0;
+    border: 1px solid #000;
+    margin: 0 auto;
+}
+
+#leftClick {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 45%;
+    height: 50px;
+    margin: 5px;
+}
+
+#rightClick {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 45%;
+    height: 50px;
+    margin: 5px;
+}
