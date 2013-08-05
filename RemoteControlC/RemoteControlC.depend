@@ -1,0 +1,147 @@
+# depslib dependency file v1.0
+1375725229 source:c:\users\carl\projects\remotecontrolc\mongoose.c
+	<sys/types.h>
+	<sys/stat.h>
+	<errno.h>
+	<signal.h>
+	<fcntl.h>
+	<time.h>
+	<stdlib.h>
+	<stdarg.h>
+	<assert.h>
+	<string.h>
+	<ctype.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<windows.h>
+	<process.h>
+	<direct.h>
+	<io.h>
+	<stdint.h>
+	<sys/wait.h>
+	<sys/socket.h>
+	<sys/poll.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+	<sys/time.h>
+	<stdint.h>
+	<inttypes.h>
+	<netdb.h>
+	<pwd.h>
+	<unistd.h>
+	<dirent.h>
+	<dlfcn.h>
+	<pthread.h>
+	"mongoose.h"
+	<openssl/ssl.h>
+	"solarisfixes.h"
+	"mod_lua.c"
+
+1375725229 c:\users\carl\projects\remotecontrolc\mongoose.h
+	<stdio.h>
+	<stddef.h>
+	<sal.h>
+
+1375725229 source:c:\users\carl\projects\remotecontrolc\mouse.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	"mouse.h"
+
+1375725229 c:\users\carl\projects\remotecontrolc\mouse.h
+
+1375725229 source:c:\users\carl\projects\remotecontrolc\routes.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<windows.h>
+	"mongoose.h"
+	"mouse.h"
+	"routes.h"
+
+1375725229 c:\users\carl\projects\remotecontrolc\routes.h
+
+1375731635 source:c:\users\carl\projects\remotecontrolc\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<winsock2.h>
+	"mongoose.h"
+	"routes.h"
+	"mouse.h"
+
+1375725229 source:c:\users\carl\documents\github\remotecontrolc\remotecontrolc\mongoose.c
+	<sys/types.h>
+	<sys/stat.h>
+	<errno.h>
+	<signal.h>
+	<fcntl.h>
+	<time.h>
+	<stdlib.h>
+	<stdarg.h>
+	<assert.h>
+	<string.h>
+	<ctype.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<windows.h>
+	<process.h>
+	<direct.h>
+	<io.h>
+	<stdint.h>
+	<sys/wait.h>
+	<sys/socket.h>
+	<sys/poll.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+	<sys/time.h>
+	<stdint.h>
+	<inttypes.h>
+	<netdb.h>
+	<pwd.h>
+	<unistd.h>
+	<dirent.h>
+	<dlfcn.h>
+	<pthread.h>
+	"mongoose.h"
+	<openssl/ssl.h>
+	"solarisfixes.h"
+	"mod_lua.c"
+
+1375725229 c:\users\carl\documents\github\remotecontrolc\remotecontrolc\mongoose.h
+	<stdio.h>
+	<stddef.h>
+	<sal.h>
+
+1375725229 source:c:\users\carl\documents\github\remotecontrolc\remotecontrolc\mouse.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	"mouse.h"
+
+1375725229 c:\users\carl\documents\github\remotecontrolc\remotecontrolc\mouse.h
+
+1375735617 source:c:\users\carl\documents\github\remotecontrolc\remotecontrolc\routes.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<windows.h>
+	"mongoose.h"
+	"mouse.h"
+	"routes.h"
+
+1375725229 c:\users\carl\documents\github\remotecontrolc\remotecontrolc\routes.h
+
+1375732792 source:c:\users\carl\documents\github\remotecontrolc\remotecontrolc\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<winsock2.h>
+	"mongoose.h"
+	"routes.h"
+	"mouse.h"
+
