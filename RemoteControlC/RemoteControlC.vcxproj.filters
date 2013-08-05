@@ -27,9 +27,6 @@
     <ClCompile Include="routes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LICENSE">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mongoose.h">
@@ -43,13 +40,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="index.html">
+    <None Include="resources\index.html">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="script.js">
+    <None Include="resources\script.js">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="style.css">
+    <None Include="resources\style.css">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

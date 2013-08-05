@@ -71,13 +71,10 @@ copy "$(ProjectDir)style.css" "$(TargetDir)"</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)index.html" "$(TargetDir)"
-copy "$(ProjectDir)script.js" "$(TargetDir)"
-copy "$(ProjectDir)style.css" "$(TargetDir)"</Command>
+      <Command>xcopy "$(ProjectDir)resources" "$(TargetDir)resources\" /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LICENSE" />
     <ClCompile Include="main.c" />
     <ClCompile Include="mongoose.c" />
     <ClCompile Include="mouse.c" />
@@ -89,16 +86,9 @@ copy "$(ProjectDir)style.css" "$(TargetDir)"</Command>
     <ClInclude Include="routes.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="index.html">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
-    <None Include="script.js">
-      <DeploymentContent>true</DeploymentContent>
-      <FileType>Text</FileType>
-    </None>
-    <None Include="style.css">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
+    <None Include="resources\index.html" />
+    <None Include="resources\script.js" />
+    <None Include="resources\style.css" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
