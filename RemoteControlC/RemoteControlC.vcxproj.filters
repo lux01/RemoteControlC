@@ -27,6 +27,9 @@
     <ClCompile Include="routes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LICENSE">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mongoose.h">
@@ -47,9 +50,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="style.css">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include=".htpasswd">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
