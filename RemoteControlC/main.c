@@ -30,7 +30,7 @@ void generate_htpasswd(char* password) {
 	int len;
 	FILE *pFile;
 
-	if(strlen(password) == 0) return;
+	if(strlen(password) == 0) { printf("\n"); return; }
 
 	// Generate the digest to hash
 	len = strlen(username) + strlen(realm) + strlen(password) + 2 + 1; // we need 2 : characters, plus null

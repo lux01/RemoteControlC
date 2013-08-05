@@ -3,6 +3,7 @@ var ctx = canvas.getContext('2d');
 
 var latestPos = null;
 var prevPos = null;
+var touchMax = 0;
 
 var server = "/"
 
@@ -49,9 +50,14 @@ function _handleTouchMove(event) {
     
 }
 
-function _handleTouchEnd() {
+function _handleTouchEnd(event) {
+	if(event.targetTouches.length > 0) return;
+	if(touchMax == 2) leftClick(); 
+	if(touchMax == 3) rightClick(); 
+    if(touchMax >= 4) changeSensitivity(); 
     prevPos = null;
     latestPos = null;
+	touchMax = 0;
 }
 
 function sendMousePosition() {
@@ -113,9 +119,9 @@ canvas.addEventListener('touchmove', _handleTouchMove);
 canvas.addEventListener('touchend', _handleTouchEnd);
 canvas.addEventListener('contextmenu', changeSensitivity);
 canvas.addEventListener('touchstart', function(event) {
-   if(event.targetTouches.length > 1)
-    changeSensitivity(); 
+   if(event.targetTouches.length > touchMax) touchMax = event.targetTouches.length;
 });
+canvas.addEventListener('click', leftClick, false);			// Does this ever work?
 
 var leftButton = document.getElementById("leftClick");
 leftButton.addEventListener('click', leftClick);
