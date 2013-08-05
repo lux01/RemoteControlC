@@ -13,9 +13,9 @@
 #include "routes.h"
 
 const char *customRoutes[] = {
-	"GET /move",
-	"GET /left_click",
-	"GET /right_click"
+	"POST /move",
+	"POST /left_click",
+	"POST /right_click"
 };
 
 int (*routeHandlers[]) (struct mg_connection *conn, const struct mg_request_info *ri) = {
@@ -50,7 +50,7 @@ int get_move(struct mg_connection *conn, const struct mg_request_info *ri) {
 			return 1;
 		}
 	}
-	
+
 	mg_printf(conn,
 		"HTTP/1.1 400 Bad Request\r\n"
 		"Content-Type: text/plain; charset=utf-8\r\n"
@@ -96,7 +96,7 @@ int begin_request_handler(struct mg_connection *conn) {
 	char timeBuffer[50], routeBuffer[2048];
 	struct tm* tm_info;
 	int i;
-	
+
 	time(&timer);
 	tm_info = localtime(&timer);
 	strftime(timeBuffer, 50, "%Y-%m-%d %H:%M:%S", tm_info);
