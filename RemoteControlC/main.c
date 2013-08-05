@@ -20,7 +20,7 @@ void generate_htpasswd(char* password) {
 	FILE *pFile;
 
 	// Generate the digest to hash
-	len = strlen(username) + strlen(realm) + strlen(password) + 2; // we need 2 : characters
+	len = strlen(username) + strlen(realm) + strlen(password) + 2 + 1; // we need 2 : characters, plus null
 	strBuff = (char*)malloc(len * sizeof(char));
 	strcpy(strBuff, username);
 	strcat(strBuff, ":");
@@ -32,12 +32,13 @@ void generate_htpasswd(char* password) {
 	mg_md5(digest, strBuff, NULL);
 	
 	// Clear the undigested string from memory
+	free(strBuff);
 
 	// Write the digest file
 	pFile = fopen(".htpasswd", "w");
 	if(pFile != NULL) {
-		len = strlen(username) + strlen(realm) + 2 + 33; // 2 for the :, 33 for the md5 hash
-		strBuff = (char*)realloc(strBuff, len * sizeof(int));
+		len = strlen(username) + strlen(realm) + 2 + 33 + 1; // 2 for the :, 33 for the md5 hash, 1 for null
+		strBuff = (char*)malloc(len * sizeof(int));
 		strcpy(strBuff, username);
 		strcat(strBuff, ":");
 		strcat(strBuff, realm);
@@ -49,7 +50,6 @@ void generate_htpasswd(char* password) {
 		fclose(pFile);
 		printf(".htpasswd generated successfully! Username is %s\n", username);
 	} else {
-		free(strBuff);
 		printf("Failed to generate .htpasswd!\n");
 		return;
 	}
@@ -77,6 +77,8 @@ char* deduce_ip() {
 		memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
 		return inet_ntoa(addr);
 	}
+
+	return NULL;
 }
 
 int main(void) {

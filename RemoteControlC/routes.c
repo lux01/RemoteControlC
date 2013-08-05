@@ -63,13 +63,31 @@ int get_move(struct mg_connection *conn, const struct mg_request_info *ri) {
 }
 
 int get_left_click(struct mg_connection *conn, const struct mg_request_info *ri) {
-	puts("Left click");
-	return 0;
+	const char* successMessage = "ok";
+	mouse_left_click();
+	mg_printf(conn,
+		"HTTP/1.1 200 OK\r\n"
+		"Content-Type: text/plain; charset=utf-8\r\n"
+		"Content-Length: %d\r\n"
+		"\r\n"
+		"%s",
+		strlen(successMessage),
+		successMessage);
+	return 1;
 }
 
 int get_right_click(struct mg_connection *conn, const struct mg_request_info *ri) {
-	puts("Right click");
-	return 0;
+	const char* successMessage = "ok";
+	mouse_right_click();
+	mg_printf(conn,
+		"HTTP/1.1 200 OK\r\n"
+		"Content-Type: text/plain; charset=utf-8\r\n"
+		"Content-Length: %d\r\n"
+		"\r\n"
+		"%s",
+		strlen(successMessage),
+		successMessage);
+	return 1;
 }
 
 int begin_request_handler(struct mg_connection *conn) {
