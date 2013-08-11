@@ -2,14 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Windows libraries
-#include <winsock2.h>
+#ifdef _WIN32
+// windows headers
+#elif __linux
+#include <unistd.h>
+#endif
 
 // We use the Mongoose server to provide a threaded HTTP server: https://github.com/valenok/mongoose
 #include "mongoose.h"
 
 #include "routes.h"
 #include "mouse.h"
+#include "network.h"
 
 const char* username = "user\0";
 const char* realm = "RemoteControlC\0";
@@ -30,7 +34,22 @@ void generate_htpasswd(char* password) {
 	int len;
 	FILE *pFile;
 
-	if(strlen(password) == 0) { printf("\n"); return; }
+    // If no password is specified, attempt to delete any existing
+    // .htpasswd file, and then exit
+	if(strlen(password) == 0) {
+	    #ifdef _WIN32
+            // Windows file deletion code
+	    #elif __linux
+            if(access( "resources/.htpasswd", F_OK) != -1) {
+                // File exists
+                if(remove("resources/.htpasswd") != 0)
+                    fprintf(stderr, "Failed to delete .htpasswd, please remove it by hand to disable password protection.\n");
+            }
+	    #endif
+	    printf("\n");
+
+	    return;
+    }
 
 	// Generate the digest to hash
 	len = strlen(username) + strlen(realm) + strlen(password) + 2 + 1; // we need 2 : characters, plus null
@@ -72,37 +91,9 @@ void generate_htpasswd(char* password) {
 	}
 }
 
-// Attempt to deduce the IP address of the server
-char* deduce_ip() {
-	char ac[80];
-	struct hostent *phe;
-	int i;
-
-	if(gethostname(ac, sizeof(ac)) == SOCKET_ERROR) {
-		printf("Error %i when getting local host name.\n", WSAGetLastError());
-		return NULL;
-	}
-
-	phe = gethostbyname(ac);
-	if(phe == 0) {
-		printf("Bad host name lookup.\n");
-		return NULL;
-	}
-
-	for(i = 0; phe->h_addr_list[i] != 0; i++) {
-		struct in_addr addr;
-		memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
-		return inet_ntoa(addr);
-	}
-
-	return NULL;
-}
-
 int main(void) {
 	struct mg_context *ctx;
 	struct mg_callbacks callbacks;
-	struct WSAData wsaData;
-	char *localIp;
 	char passwdBuff[52];
 
 	const char *options[] = {
@@ -116,24 +107,17 @@ int main(void) {
 	memset(&callbacks, 0, sizeof(callbacks));
 	callbacks.begin_request = begin_request_handler;
 
-	// Attempt to deduce the local IP
-	if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		return -1;
-	localIp = deduce_ip();
-	WSACleanup();
-
-	if(localIp != NULL) {
-		printf("Starting remote control server on IP\n"
-          "+------------------+\n"
-          "| %-16s |\n"
-          "+------------------+\n", localIp);
-	}
+    // Print the system IPs
+    print_system_ips();
 
 	// Generate the htpasswd file
-	printf("Please enter password (%i characters max., leave blank for none): ",
+	printf("Please enter password (%lu characters max., leave blank for none): ",
         (sizeof passwdBuff)-2); // 2 for \n\0
 	my_gets(passwdBuff, sizeof passwdBuff);
 	generate_htpasswd(passwdBuff);
+
+    // Initialise the mouse handling code
+    mouse_init();
 
 	// Start Mongoose
 	ctx = mg_start(&callbacks, NULL, options);
@@ -141,10 +125,13 @@ int main(void) {
 
 	printf("Press <ENTER> to terminate.\n");
 
+    // Wait for an enter to exit.
 	getchar();
 
+    // Star cleaning up
 	printf("Exiting...\n");
 	mg_stop(ctx);
+	mouse_cleanup();
 
 	return EXIT_SUCCESS;
 }

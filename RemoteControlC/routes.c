@@ -4,7 +4,9 @@
 #include <string.h>
 
 // Windows headers
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 // Mongoose headers
 #include "mongoose.h"
@@ -36,13 +38,13 @@ int get_move(struct mg_connection *conn, const struct mg_request_info *ri) {
 	// If we have a query string, continue
 	if(ri->query_string) {
 
-		if((numParsed = sscanf(ri->query_string, "x=%i&y=%i", &x, &y)) == 2) {
+		if((numParsed = sscanf(ri->query_string, "x=%d&y=%d", &x, &y)) == 2) {
 			// We're guaranteed to have parsed x and y successfully
 			mouse_move(x, y);
 			mg_printf(conn,
 				"HTTP/1.1 200 OK\r\n"
 				"Content-Type: text/plain; charset=utf-8\r\n"
-				"Content-Length: %d\r\n"
+				"Content-Length: %lu\r\n"
 				"\r\n"
 				"%s",
 				strlen(successMessage),
@@ -54,7 +56,7 @@ int get_move(struct mg_connection *conn, const struct mg_request_info *ri) {
 	mg_printf(conn,
 		"HTTP/1.1 400 Bad Request\r\n"
 		"Content-Type: text/plain; charset=utf-8\r\n"
-		"Content-Length: %d\r\n"
+		"Content-Length: %lu\r\n"
 		"\r\n"
 		"%s",
 		strlen(failMessage),
@@ -68,7 +70,7 @@ int get_left_click(struct mg_connection *conn, const struct mg_request_info *ri)
 	mg_printf(conn,
 		"HTTP/1.1 200 OK\r\n"
 		"Content-Type: text/plain; charset=utf-8\r\n"
-		"Content-Length: %d\r\n"
+		"Content-Length: %lu\r\n"
 		"\r\n"
 		"%s",
 		strlen(successMessage),
@@ -82,7 +84,7 @@ int get_right_click(struct mg_connection *conn, const struct mg_request_info *ri
 	mg_printf(conn,
 		"HTTP/1.1 200 OK\r\n"
 		"Content-Type: text/plain; charset=utf-8\r\n"
-		"Content-Length: %d\r\n"
+		"Content-Length: %lu\r\n"
 		"\r\n"
 		"%s",
 		strlen(successMessage),
@@ -105,7 +107,7 @@ int begin_request_handler(struct mg_connection *conn) {
 	printf("[%s] Requested: %s\n", timeBuffer, ri->uri);
 
 	// Check to see if we have a custom route for the requested method
-	_snprintf(routeBuffer, 2048, "%s %s", ri->request_method, ri->uri);
+	snprintf(routeBuffer, 2048, "%s %s", ri->request_method, ri->uri);
 	for(i = 0; i < numRoutes; i++) {
 		if( strcmp( routeBuffer, customRoutes[i] ) == 0 ) {
 			return (*routeHandlers[i])(conn, ri);
