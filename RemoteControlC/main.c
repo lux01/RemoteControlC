@@ -3,7 +3,7 @@
 #include <string.h>
 
 #ifdef _WIN32
-// windows headers
+#include <windows.h>
 #elif __linux
 #include <unistd.h>
 #endif
@@ -33,19 +33,22 @@ void generate_htpasswd(char* password) {
 	char digest[33];
 	int len;
 	FILE *pFile;
+#ifdef _WIN32
+	DWORD dwAttrib;
+#endif
 
     // If no password is specified, attempt to delete any existing
     // .htpasswd file, and then exit
 	if(strlen(password) == 0) {
 	    #ifdef _WIN32
-            // Windows file deletion code
+            dwAttrib = GetFileAttributes("resources\\.htpasswd");
+			if( dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY) ) {
 	    #elif __linux
             if(access( "resources/.htpasswd", F_OK) != -1) {
-                // File exists
+		#endif
                 if(remove("resources/.htpasswd") != 0)
                     fprintf(stderr, "Failed to delete .htpasswd, please remove it by hand to disable password protection.\n");
             }
-	    #endif
 	    printf("\n");
 
 	    return;

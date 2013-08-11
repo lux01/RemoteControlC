@@ -26,9 +26,10 @@ void print_system_ips() {
     struct WSAData wsaData;
     char ac[80];
     struct hostent *phe;
+	struct in_addr addr;
     int i;
 
-    if(WSAStartup(MAKEWORD(2, 2) &wsaData) != 0) {
+    if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         fprintf(stderr, "Couldn't initialise WinSocket 2.2! Can't deduce machine address.");
     } else {
         if(gethostname(ac, sizeof(ac)) == SOCKET_ERROR) {
@@ -46,9 +47,10 @@ void print_system_ips() {
         printf("Your system recognises the following IP addresses:\n");
         printf("+-----------------------------------------------+\n");
         for(i = 0; phe->h_addr_list[i] != 0; i++) {
-            printf("| %-45s |\n", inet_ntoa(phe->h_addr_list[i]));
+			memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
+            printf("| %-45s |\n",	inet_ntoa(addr));
         }
-        printf("+----------------------------------------------+\n");
+        printf("+-----------------------------------------------+\n");
 
         WSACleanup();
     }

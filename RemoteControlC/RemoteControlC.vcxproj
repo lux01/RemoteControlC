@@ -50,9 +50,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(ProjectDir)index.html" "$(TargetDir)"
-copy "$(ProjectDir)script.js" "$(TargetDir)"
-copy "$(ProjectDir)style.css" "$(TargetDir)"</Command>
+      <Command>xcopy "$(ProjectDir)resources" "$(TargetDir)resources\" /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,18 +69,20 @@ copy "$(ProjectDir)style.css" "$(TargetDir)"</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)resources" "$(TargetDir)resources\" /E</Command>
+      <Command>xcopy "$(ProjectDir)resources" "$(TargetDir)resources\" /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="mongoose.c" />
     <ClCompile Include="mouse.c" />
+    <ClCompile Include="network.c" />
     <ClCompile Include="routes.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mongoose.h" />
     <ClInclude Include="mouse.h" />
+    <ClInclude Include="network.h" />
     <ClInclude Include="routes.h" />
   </ItemGroup>
   <ItemGroup>

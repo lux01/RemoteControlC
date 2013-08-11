@@ -6,6 +6,10 @@
 // Windows headers
 #ifdef _WIN32
 #include <windows.h>
+
+// Windows sucks
+#define snprintf _snprintf
+
 #endif
 
 // Mongoose headers
