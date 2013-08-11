@@ -9,6 +9,8 @@ var server = "/"
 
 var sensitivity = 1;
 
+var optionsVisible = false;
+
 function resizeCanvas() {
     canvas.width = document.documentElement.clientWidth - 20;
     canvas.height = document.documentElement.clientHeight - 70;
@@ -103,6 +105,12 @@ function changeSensitivity() {
     changeSensitivity();
 }
 
+function toggleConfig() {
+    document.getElementById('mainContent').style.left = (optionsVisible) ? '0px' : '150px';
+    optionsVisible = !optionsVisible;
+}
+
+
 // Prevent overscrolling
 document.body.addEventListener('touchmove', function(event) {
     event.preventDefault();
@@ -111,9 +119,15 @@ document.body.addEventListener('touchstart', function(event) {
     event.preventDefault();
 });
 
+// Resize canvas on window resize
 window.onresize = resizeCanvas;
 resizeCanvas();
 
+// Add config button event handlers
+document.getElementById('optionsLink').addEventListener('click', toggleConfig);
+document.getElementById('optionsLink').addEventListener('touchend', toggleConfig);
+
+// Add canvas event handlers
 canvas.addEventListener('mousemove', _handleMouseMove);
 canvas.addEventListener('touchmove', _handleTouchMove);
 canvas.addEventListener('touchend', _handleTouchEnd);
@@ -123,6 +137,8 @@ canvas.addEventListener('touchstart', function(event) {
 });
 canvas.addEventListener('click', leftClick, false);			// Does this ever work?
 
+
+// Click handlers
 var leftButton = document.getElementById("leftClick");
 leftButton.addEventListener('click', leftClick);
 leftButton.addEventListener('touchend', leftClick);
@@ -132,3 +148,5 @@ rightButton.addEventListener('click', rightClick);
 rightButton.addEventListener('touchend', rightClick);
 
 setInterval(sendMousePosition, 10);
+
+

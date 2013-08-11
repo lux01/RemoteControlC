@@ -1,13 +1,45 @@
+@import url("reset.css");
+@import url(http://fonts.googleapis.com/css?family=Nunito);
+
+
 body {
     overflow: hidden;
     text-align: center;
+}
+
+#headerBar {
+    height: 40px;
+    padding: 5px;
+    border-bottom: 1px solid #000;
+    background: linear-gradient( to top, DodgerBlue, PowderBlue );
+}
+
+#headerBar header {
+    margin: 5px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 30px;
+}
+
+#headerBar #optionsLink {
+    position: absolute;
+    left:0;
+    top: 0;
+    height: 50px;
+    background: rgba(0,0,0,0);
+    border: 0;
+    border-style: solid;
+    border-right: 1px solid #000;
+    border-radius: 0;
+    color: #000;
+    font-family: 'Nunito', sans-serif;
+    font-size: 10pt;
 }
 
 button {
     z-index: 999;
 }
 
-canvas {
+#remoteCanvas {
     z-index: 0;
     border: 1px solid #000;
     margin: 0 auto;
@@ -29,4 +61,30 @@ canvas {
     width: 45%;
     height: 50px;
     margin: 5px;
+}
+
+#mainContent {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+
+#optionsContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #333;
+    z-index: 0;
+    width: 139px;
+    padding: 5px;
+    height: 100%;
+    color: #fff;
+    font-family: 'Nunito';
+    text-align: left;
+    border-right: 1px solid #000;
 }
