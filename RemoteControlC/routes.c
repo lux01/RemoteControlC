@@ -42,7 +42,7 @@ int get_move(struct mg_connection *conn, const struct mg_request_info *ri) {
 	// If we have a query string, continue
 	if(ri->query_string) {
 
-		if((numParsed = sscanf(ri->query_string, "x=%d&y=%d", &x, &y)) == 2) {
+		if((numParsed = sscanf(ri->query_string, "x=%ld&y=%ld", &x, &y)) == 2) {
 			// We're guaranteed to have parsed x and y successfully
 			mouse_move(x, y);
 			mg_printf(conn,
