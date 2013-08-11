@@ -63,12 +63,11 @@ static int uinput_fd;
 
 void mouse_init() {
     struct uinput_user_dev uidev;
-    struct input_event event;
 
     // Attempt to open the uinput device
     uinput_fd = open("/dev/uinput", O_WRONLY);
     if(uinput_fd < 0) {
-        fprintf(stderr, "Error: %s (%i). Ensure that you have the uinput kernel module available at /dev/uinput, and that this is writable by the current user.",
+        fprintf(stderr, "Error: %s (%i). Ensure that you have the uinput kernel module available at /dev/uinput, and that this is writable by the current user.\n",
                 strerror(errno), errno);
         exit(EXIT_FAILURE);
     }
@@ -97,7 +96,7 @@ void mouse_init() {
     // Request the creation of the device
     if(ioctl(uinput_fd, UI_DEV_CREATE, 0) < 0) {
         // Failed to create the device, error and exit
-        fprintf(stderr, "Error: %s (%i). Coudln't create the input device.", strerror(errno), errno);
+        fprintf(stderr, "Error: %s (%i). Coudln't create the input device.\n", strerror(errno), errno);
         close(uinput_fd);
         exit(EXIT_FAILURE);
     }

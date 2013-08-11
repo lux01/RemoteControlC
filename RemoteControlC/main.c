@@ -107,8 +107,8 @@ int main(void) {
 		NULL
 	};
 
-	memset(&callbacks, 0, sizeof(callbacks));
-	callbacks.begin_request = begin_request_handler;
+    // Initialise the mouse handling code
+    mouse_init();
 
     // Print the system IPs
     print_system_ips();
@@ -119,8 +119,9 @@ int main(void) {
 	my_gets(passwdBuff, sizeof passwdBuff);
 	generate_htpasswd(passwdBuff);
 
-    // Initialise the mouse handling code
-    mouse_init();
+    // Prepare mongoose
+	memset(&callbacks, 0, sizeof(callbacks));
+	callbacks.begin_request = begin_request_handler;
 
 	// Start Mongoose
 	ctx = mg_start(&callbacks, NULL, options);
