@@ -137,16 +137,6 @@ canvas.addEventListener('touchstart', function(event) {
 });
 canvas.addEventListener('click', leftClick, false);			// Does this ever work?
 
-
-// Click handlers
-var leftButton = document.getElementById("leftClick");
-leftButton.addEventListener('click', leftClick);
-leftButton.addEventListener('touchend', leftClick);
-
-var rightButton = document.getElementById("rightClick");
-rightButton.addEventListener('click', rightClick);
-rightButton.addEventListener('touchend', rightClick);
-
 setInterval(sendMousePosition, 10);
 
 
