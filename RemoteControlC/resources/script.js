@@ -181,8 +181,15 @@ document.getElementById('forceRightClick').addEventListener('touchend', rightCli
 
 // Add canvas event handlers
 canvas.addEventListener('mousemove', _handleMouseMove);
+canvas.addEventListener('click', function(event) {
+    event.preventDefault();
+    leftClick();
+});
+canvas.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+    rightClick();
+});
 canvas.addEventListener('touchmove', _handleTouchMove);
-
 canvas.addEventListener('touchstart', _handleTouchStart);
 canvas.addEventListener('touchend', _handleTouchEnd);
 
