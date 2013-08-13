@@ -1,15 +1,30 @@
+// Canvas
 var canvas = document.getElementById("remoteCanvas");
 var ctx = canvas.getContext('2d');
 
+// Position
 var latestPos = null;
 var prevPos = null;
-var touchMax = 0;
 
+// Server root
 var server = "/"
 
+// Mouse speed multiplier
 var sensitivity = 1;
 
 var optionsVisible = false;
+
+// Touch start time
+var startTime = null;
+var numTouches = 0;
+var skipEnds = 0;
+
+// Num tap event handlers
+// The function at index i will be called if a (i+1) finger tap is detected.
+var numTapEvents = [
+    leftClick,
+    rightClick
+];
 
 function resizeCanvas() {
     canvas.width = document.documentElement.clientWidth - 20;
@@ -30,19 +45,27 @@ function _handleMouseMove(event) {
     }
 }
 
+function _handleTouchStart(event) {
+    numTouches++;
+    startTime = new Date();
+    startPos = {x: event.touches[0].pageX, y: event.touches[0].pageY};
+
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(0,0,1000,1000);
+
+    if(numTouches == 1) {
+        latestPos = null;
+        prevPos = null;
+    }
+}
+
 function _handleTouchMove(event) {
+    ctx.fillStyle = 'SkyBlue';
+    ctx.fillRect(0,0,1000,1000);
+    ctx.fillStyle = 'black';
+
     if (event.targetTouches.length == 1) {
         var touch = event.targetTouches[0];
-        ctx.clearRect(0,0,canvas.width, canvas.height);
-        ctx.textBaseline = 'top';
-        ctx.textAlign = 'left';
-        ctx.font = 'bold 14px Arial';
-        ctx.fillText("(" + Math.round(touch.pageX) + ", " + Math.round(touch.pageY) + ")", 0, 0);
-        
-        // Attempt to remove some jitter from the movement.
-        //if( Math.abs(prevPos.pageX - latestPos.x) <= 3 && Math.abs(prevPos.pageY - latestPos.y) <= 3)
-        //    return;
-        
         latestPos = {x: touch.pageX, y: touch.pageY};
         
         if(prevPos === null) {
@@ -53,22 +76,45 @@ function _handleTouchMove(event) {
 }
 
 function _handleTouchEnd(event) {
-	if(event.targetTouches.length > 1) return;
-	if(touchMax == 2) leftClick(); 
-	if(touchMax == 3) rightClick(); 
-    if(touchMax >= 4) changeSensitivity(); 
-    prevPos = null;
+    numTouches--;
+    console.log(numTouches, skipEnds);
+    if(skipEnds > 0) {
+        skipEnds--;
+        return;
+    }
+
+    ctx.clearRect(0,0,1000,1000);
+    // Check to see if this is a tap event
+    var endTime = new Date();
+    var endPos = {x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY};
+    var dt = endTime - startTime;
+    var dx = endPos.x - startPos.x;
+    var dy = endPos.y - startPos.y;
+    var ds = Math.sqrt( Math.pow(dx, 2) + Math.pow(dy, 2) );
+    console.log(sprintf("dt: %d, dx: %d, dy: %d, ds: %f, ctl: %d", dt, dx, dy, ds, event.changedTouches.length));
+
+    if( dt < 100 || ds < 3) {
+        console.log(sprintf("%d tap", numTouches+1));
+        ctx.fillStyle = 'HotPink';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        skipEnds = numTouches;
+
+        if(typeof numTapEvents[numTouches] !== 'undefined') {
+            numTapEvents[numTouches]();
+        }
+    }
+
     latestPos = null;
-	touchMax = event.targetTouches.length;
+    startTime = null;
 }
 
 function sendMousePosition() {
     if(latestPos !== null && prevPos !== null && latestPos != prevPos) {
-        console.log("Sending mouse position", latestPos);
-        
         var x = sensitivity*(latestPos.x - prevPos.x);
         var y = sensitivity*(latestPos.y - prevPos.y);
         
+        console.log(sprintf("Sending change in position (%d, %d)", x, y));
+
         var xhReq = new XMLHttpRequest();
         xhReq.open("POST", server + "move?x="+ x + "&y=" + y, true);
         xhReq.send(null);
@@ -88,28 +134,22 @@ function rightClick() {
     xhReq.send(null);
 }
 
-function changeSensitivity() {
-    var sense = prompt("Mouse speed:", sensitivity);
-    if(isNaN(sense)) {
-        alert("Mouse speed must be a number.");
-    } else if( sense <= 0) {
-        alert("Mouse speed must be a non-negative number.");
-    } else if(!isFinite(sense)) {
-        alert("Mouse speed must be finite.");
-    } else if(sense == null) {
-        return;
-    } else {
-        sensitivity = sense;
-        return;
-    }
-    changeSensitivity();
-}
-
 function toggleConfig() {
     document.getElementById('mainContent').style.left = (optionsVisible) ? '0px' : '150px';
     optionsVisible = !optionsVisible;
 }
 
+function increaseSensitivity() {
+    sensitivity++;
+    document.getElementById('mouseSpeedInput').value = sensitivity;
+    document.getElementById('decreaseSpeedButton').disabled = false;
+}
+
+function decreaseSensitivity() {
+    sensitivity = Math.max(1, sensitivity - 1);
+    document.getElementById('mouseSpeedInput').value = sensitivity;
+    document.getElementById('decreaseSpeedButton').disabled = (sensitivity == 1);
+}
 
 // Prevent overscrolling
 document.body.addEventListener('touchmove', function(event) {
@@ -127,15 +167,24 @@ resizeCanvas();
 document.getElementById('optionsLink').addEventListener('click', toggleConfig);
 document.getElementById('optionsLink').addEventListener('touchend', toggleConfig);
 
+// Add increase/decrease speed button handlers
+document.getElementById('increaseSpeedButton').addEventListener('click', increaseSensitivity);
+document.getElementById('increaseSpeedButton').addEventListener('touchend', increaseSensitivity);
+document.getElementById('decreaseSpeedButton').addEventListener('click', decreaseSensitivity);
+document.getElementById('decreaseSpeedButton').addEventListener('touchend', decreaseSensitivity);
+
+// Add left/right click buttons
+document.getElementById('forceLeftClick').addEventListener('click', leftClick);
+document.getElementById('forceLeftClick').addEventListener('touchend', leftClick);
+document.getElementById('forceRightClick').addEventListener('click', rightClick);
+document.getElementById('forceRightClick').addEventListener('touchend', rightClick);
+
 // Add canvas event handlers
 canvas.addEventListener('mousemove', _handleMouseMove);
 canvas.addEventListener('touchmove', _handleTouchMove);
+
+canvas.addEventListener('touchstart', _handleTouchStart);
 canvas.addEventListener('touchend', _handleTouchEnd);
-canvas.addEventListener('contextmenu', changeSensitivity);
-canvas.addEventListener('touchstart', function(event) {
-   if(event.targetTouches.length > touchMax) touchMax = event.targetTouches.length;
-});
-canvas.addEventListener('click', leftClick, false);			// Does this ever work?
 
 setInterval(sendMousePosition, 10);
 

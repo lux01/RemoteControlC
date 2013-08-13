@@ -4,11 +4,21 @@
         <meta charset="utf-8">
         <title>Remote Control</title>
         <link rel="stylesheet" href="style.css" />
+        <script type="text/javascript" src="sprintf.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
     </head>
     <body>
         <div id="optionsContent">
-            Hello, world!
+            <label for="mouseSpeedInput">Mouse Speed</label><br />
+            <input id="mouseSpeedInput" type="number" step="1" min="1" value="1" readonly /><br />
+            <button id="increaseSpeedButton">Increase</button><br />
+            <button id="decreaseSpeedButton" disabled >Decrease</button><br />
+            <br /><br />
+            <button id="forceLeftClick">Left Click</button><br />
+            <button id="forceRightClick">Right Click</button>
+            <br /><br />
+            RemoteControlC v0.1.2
         </div>
         <div id="mainContent">
             <div id="headerBar">
