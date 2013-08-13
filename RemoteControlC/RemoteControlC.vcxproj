@@ -38,7 +38,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>rrc</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -73,6 +75,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="getopt.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="mongoose.c" />
     <ClCompile Include="mouse.c" />
@@ -80,6 +83,7 @@
     <ClCompile Include="routes.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="getopt.h" />
     <ClInclude Include="mongoose.h" />
     <ClInclude Include="mouse.h" />
     <ClInclude Include="network.h" />

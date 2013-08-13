@@ -30,6 +30,9 @@
     <ClCompile Include="network.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="getopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mongoose.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="network.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="getopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
