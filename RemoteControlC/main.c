@@ -10,12 +10,11 @@
 
 // We use the Mongoose server to provide a threaded HTTP server: https://github.com/valenok/mongoose
 #include "mongoose.h"
-
+#include "getopt.h"
 #include "routes.h"
 #include "mouse.h"
 #include "network.h"
 
-const char* username = "user\0";
 const char* realm = "RemoteControlC\0";
 
 size_t my_gets(char *buff, size_t size){
@@ -28,18 +27,18 @@ size_t my_gets(char *buff, size_t size){
     return result;
 }
 
-void generate_htpasswd(char* password) {
+void generate_htpasswd(struct options * opts) {
 	char *strBuff;
 	char digest[33];
 	int len;
 	FILE *pFile;
-#ifdef _WIN32
+    #ifdef _WIN32
 	DWORD dwAttrib;
-#endif
+    #endif
 
     // If no password is specified, attempt to delete any existing
     // .htpasswd file, and then exit
-	if(strlen(password) == 0) {
+	if(strlen(opts->password) == 0 || opts->disableAuth) {
 	    #ifdef _WIN32
             dwAttrib = GetFileAttributes("resources\\.htpasswd");
 			if( dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY) ) {
@@ -55,13 +54,13 @@ void generate_htpasswd(char* password) {
     }
 
 	// Generate the digest to hash
-	len = strlen(username) + strlen(realm) + strlen(password) + 2 + 1; // we need 2 : characters, plus null
+	len = strlen(opts->username) + strlen(realm) + strlen(opts->password) + 2 + 1; // we need 2 : characters, plus null
 	strBuff = (char*)malloc(len * sizeof(char));
-	strcpy(strBuff, username);
+	strcpy(strBuff, opts->username);
 	strcat(strBuff, ":");
 	strcat(strBuff, realm);
 	strcat(strBuff, ":");
-	strcat(strBuff, password);
+	strcat(strBuff, opts->password);
 
 	// Calculate the digest
 	mg_md5(digest, strBuff, NULL);
@@ -72,9 +71,9 @@ void generate_htpasswd(char* password) {
 	// Write the digest file
 	pFile = fopen("resources/.htpasswd", "w");
 	if(pFile != NULL) {
-		len = strlen(username) + strlen(realm) + 2 + 32 + 1; // 2 for the :, 32 for the md5 hash, 1 for null
+		len = strlen(opts->username) + strlen(realm) + 2 + 32 + 1; // 2 for the :, 32 for the md5 hash, 1 for null
 		strBuff = (char*)malloc(len * sizeof(char));
-		strcpy(strBuff, username);
+		strcpy(strBuff, opts->username);
 		strcat(strBuff, ":");
 		strcat(strBuff, realm);
 		strcat(strBuff, ":");
@@ -87,17 +86,19 @@ void generate_htpasswd(char* password) {
 		// Clear the digested string from memory
         free(strBuff);
 
-		printf(".htpasswd generated successfully!\n\nUsername: \t\t%s\nPassword: \t\t%s\n", username, password);
+		printf(".htpasswd generated successfully!\n\nUsername: \t\t%s\nPassword: \t\t%s\n", opts->username, opts->password);
 	} else {
 		printf("Failed to generate .htpasswd!\n");
 		return;
 	}
 }
 
-int main(void) {
+int main(int argc, char **argv) {
 	struct mg_context *ctx;
 	struct mg_callbacks callbacks;
-	char passwdBuff[52];
+	struct options opts;
+	int parseRet;
+	unsigned long passbuffSize = 52;
 
 	const char *options[] = {
 		"listening_ports", "8080",
@@ -107,21 +108,29 @@ int main(void) {
 		NULL
 	};
 
+	// Parse command-line arguments
+    set_default_opts(&opts);
+    parseRet = parse_opts(argc, argv, &opts);
     // Initialise the mouse handling code
     mouse_init();
 
     // Print the system IPs
     print_system_ips();
 
-	// Generate the htpasswd file
-	printf("Please enter password (%lu characters max., leave blank for none): ",
-        (sizeof passwdBuff)-2); // 2 for \n\0
-	my_gets(passwdBuff, sizeof passwdBuff);
-	generate_htpasswd(passwdBuff);
+	// Prompt the user for a password if necessary.
+	if(!(parseRet & P_PASS || parseRet & P_NOAU)) {
+        opts.password = (char *) malloc(passbuffSize * sizeof(char));
+        printf("Please enter password (%lu characters max., leave blank for none): ",
+            passbuffSize-2); // 2 for \n\0
+        my_gets(opts.password, passbuffSize);
+    }
+    // Generate (or remove) the .htpasswd file.
+    generate_htpasswd(&opts);
 
     // Prepare mongoose
 	memset(&callbacks, 0, sizeof(callbacks));
 	callbacks.begin_request = begin_request_handler;
+    options[1] = opts.ports;
 
 	// Start Mongoose
 	ctx = mg_start(&callbacks, NULL, options);
