@@ -301,3 +301,6 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
+# Code::Blocks files
+*.cbp
+*.layout
